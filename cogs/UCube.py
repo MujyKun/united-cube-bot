@@ -163,6 +163,7 @@ class UCube(commands.Cog):
             pass
         await self.bot.conn.delete_ucube_channel(channel_id, community_name)
 
+    @commands.is_owner()
     @commands.command()
     async def testucube(self, ctx):
         """Test posting CLC notifications."""
