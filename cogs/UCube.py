@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from ..run import UCubeBot
 
 DEV_MODE = False
+EMBED_CAP = 1600
 
 """
 THIS FILE USED A TEMPLATE FROM WEVERSE
@@ -340,7 +341,7 @@ class UCube(commands.Cog):
         channels = (channels.copy()).values()
 
         embed_title = f"New [{club.name}] {post.user.name} Notification!"
-        embed = await self.set_post_embed(post, embed_title)
+        embed_list = await self.set_post_embeds(post, embed_title)
         media_files, message_text = await self.get_media_files_and_urls(post)
 
         for channel_info in channels:
@@ -354,11 +355,11 @@ class UCube(commands.Cog):
                 channel_info.already_posted.append(post.slug)
 
                 print(f"Sending Post Slug: {post.slug} to text channel {channel_info.id}")
-                await self.send_ucube_to_channel(channel_info, message_text, embed, media_files, club.name)
+                await self.send_ucube_to_channel(channel_info, message_text, embed_list, media_files, club.name)
             except Exception as e:
                 print(f"{e} - Failed to send to channel id {channel_info.id}.")
 
-    async def set_post_embed(self, post: models.Post, embed_title):
+    async def set_post_embeds(self, post: models.Post, embed_title) -> List[discord.Embed]:
         """Set Post Embed for Weverse.
         :param post: Post object
         :param embed_title: Title of the embed.
@@ -368,11 +369,23 @@ class UCube(commands.Cog):
 
         embed_description = f"Content: **{post.content}**\n" \
                             f"Translated Content: **{translation}**"
-        embed = await self.create_embed(title=embed_title, title_desc=embed_description)
 
-        return embed
+        desc_list = []
+        while len(embed_description) >= EMBED_CAP:
+            desc_list.append(embed_description[0:EMBED_CAP])
+            embed_description = embed_description[0:len(embed_description)]
 
-    async def send_ucube_to_channel(self, channel_info: TextChannel, message_text, embed, media_files, club_name):
+        if embed_description:
+            desc_list.append(embed_description[0:len(embed_description)])
+
+        embed_list = []
+        for count, desc in enumerate(desc_list, 1):
+            embed_list.append(await self.create_embed(title=f"{embed_title} - Post #{count}/{len(desc_list)}",
+                                                      title_desc=desc))
+
+        return embed_list
+
+    async def send_ucube_to_channel(self, channel_info: TextChannel, message_text, embed_list, media_files, club_name):
         """Send a UCube post to a channel."""
         ...
         try:
@@ -391,7 +404,10 @@ class UCube(commands.Cog):
 
         try:
             mention_role = f"<@&{channel_info.role_id}>" if channel_info.role_id else None
-            msg_list.append(await channel.send(mention_role, embed=embed))
+
+            for count, embed in enumerate(embed_list, 1):
+                msg_list.append(await channel.send(mention_role if count == 1 else None, embed=embed))
+
             if message_text or media_files:
                 # Since an embed already exists, any individual content will not load
                 # as an embed -> Make it it's own message.
