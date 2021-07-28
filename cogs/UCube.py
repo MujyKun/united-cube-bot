@@ -185,6 +185,7 @@ class UCube(commands.Cog):
                 print(f"{e} - Failed Test on Notification.")
 
     @commands.command()
+    @commands.has_guild_permissions(manage_messages=True)
     async def list(self, ctx):
         """List the communities the current channel is following."""
         followed_communities = [community_name for community_name in self.get_community_names() if
@@ -193,6 +194,7 @@ class UCube(commands.Cog):
         return await ctx.send(msg_string)
 
     @commands.command(aliases=["updates"])
+    @commands.has_guild_permissions(manage_messages=True)
     async def ucube(self, ctx, *, community_name: str = None):
         """Follow or Unfollow a UCube Community."""
         try:
@@ -222,6 +224,7 @@ class UCube(commands.Cog):
             return await ctx.send(e)
 
     @commands.command()
+    @commands.has_guild_permissions(manage_messages=True)
     async def role(self, ctx, role: discord.Role, *, community_name: str):
         """Add a role to be notified when a community posts."""
         community_name = community_name.lower()
