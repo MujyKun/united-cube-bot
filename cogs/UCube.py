@@ -160,7 +160,7 @@ class UCube(commands.Cog):
         channels = self._channels.get(community_name.lower())
         try:
             channels.pop(channel_id)
-        except AttributeError or KeyError:
+        except (AttributeError, KeyError):
             pass
         await self.bot.conn.delete_ucube_channel(channel_id, community_name)
 
