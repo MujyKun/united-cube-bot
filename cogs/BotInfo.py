@@ -13,7 +13,7 @@ class BotInfo(commands.Cog):
     @commands.command()
     async def invite(self, ctx):
         """Sends an invite to the bot."""
-        return await ctx.send("https://discord.com/oauth2/authorize?client_id=864670527187451914&scope=bot&permission"
+        return await ctx.send("https://discord.com/oauth2/authorize?client_id=867675755177836555&scope=bot&permission"
                               "s=2952997936")
 
     @commands.command()
