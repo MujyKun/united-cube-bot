@@ -1,5 +1,8 @@
 # UCubeBot
 
+| :exclamation:  This project is no longer being maintained. I'm not sure if it still works.  :exclamation:  |
+|-----------------------------------------|
+
 ## [Invite to your Server](https://discord.com/oauth2/authorize?client_id=867675755177836555&scope=bot&permissions=2952997936)
 
 [![Discord Bots](https://top.gg/api/widget/867675755177836555.svg)](https://top.gg/bot/867675755177836555)
